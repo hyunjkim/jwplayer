@@ -19,16 +19,21 @@ import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener, View.OnClickListener {
 
 	/**
 	 * Reference to the {@link JWPlayerView}
 	 */
-	private JWPlayerView mPlayerView;
+	private PlaylistItem playlistItem;
+    private JWPlayerView mPlayerView;
 	private Button loadBtn, playBtn;
 	private TextView outputTextView;
 	private EditText inputURL;
-	private String videoUrl;
+    private List<PlaylistItem> pi = new ArrayList<>();
+	private String videoURL,imageURL;
 
 	/**
 	 * An instance of our event handling class
@@ -64,6 +69,12 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
 
 		// Load a media source
+//        pi.add(new PlaylistItem.Builder()
+//                .file(videoURL)
+//                .image(imageURL)
+//                .title("JW Player")
+//                .description("A video player testing video.")
+//                .build());
 
 		// Get a reference to the CastManager
 		mCastManager = CastManager.getInstance();
@@ -75,7 +86,8 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		inputURL = (EditText) findViewById(R.id.input);
 		loadBtn = (Button)findViewById(R.id.loadBtn);
 		playBtn = (Button)findViewById(R.id.playBtn);
-		videoUrl = "";
+		videoURL = "";
+		imageURL = "";
 		mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
 
 		loadBtn.setOnClickListener(this);
@@ -166,21 +178,39 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 	public void onClick(View v) {
 		switch(v.getId()){
 			case R.id.loadBtn:
-				videoUrl = inputURL.getText().toString();
+				videoURL = inputURL.getText().toString();
+                pi.add(addVideo(videoURL));
                 break;
 			case R.id.playBtn:
+			    if(pi.size()==0) pi.add(addVideo(videoURL));
 				startToPlay();
-				break;
+                break;
 		}
 	}
 
-	private void startToPlay() {
-		if(videoUrl.length() < 1) videoUrl = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/EasyVideo.mp4";
-        PlaylistItem pi = new PlaylistItem.Builder()
-				.file(videoUrl)
-				.title("JW Player")
-				.description("A video player testing video.")
-				.build();
-		mPlayerView.load(pi);
-	}
+    private PlaylistItem addVideo(String video) {
+        if(video == null || video.equals("")) {
+            videoURL = makeURL("EasyVideo.mp4");
+            imageURL = makeURL("EasyImage.jpg");
+        } else {
+            videoURL = makeURL("MediumVideo.mp4");
+            imageURL = makeURL("MediumImage.jpg");
+        }
+        playlistItem = new PlaylistItem.Builder()
+                .file(videoURL)
+                .image(imageURL)
+                .title("JW Player")
+                .description("A video player testing video.")
+                .build();
+        return playlistItem;
+    }
+
+    private String makeURL(String img) {
+        String urlString = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/";
+        return urlString+img;
+    }
+
+    private void startToPlay() {
+        mPlayerView.load(pi);
+    }
 }
