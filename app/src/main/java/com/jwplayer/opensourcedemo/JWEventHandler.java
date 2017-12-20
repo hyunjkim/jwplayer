@@ -292,7 +292,8 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onAdPlay(AdPlayEvent adPlayEvent) {
-        updateOutput("onAdPlay(\"" + adPlayEvent.getTag() + "\", \"" + adPlayEvent.getOldState() + "\")");
+        updateOutput("COMMERCIAL BREAK!!!!!! JWPLAYER THE BEST!!");
+//        updateOutput("onAdPlay(\"" + adPlayEvent.getTag() + "\", \"" + adPlayEvent.getOldState() + "\")");
     }
 
     @Override

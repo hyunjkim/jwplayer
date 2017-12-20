@@ -15,7 +15,11 @@ import android.widget.TextView;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.cast.CastManager;
+import com.longtailvideo.jwplayer.configuration.PlayerConfig;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
+import com.longtailvideo.jwplayer.media.ads.Ad;
+import com.longtailvideo.jwplayer.media.ads.AdBreak;
+import com.longtailvideo.jwplayer.media.ads.AdSource;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 
 import java.util.ArrayList;
@@ -171,34 +175,47 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
     }
 
     private void startToPlay() {
-//        List<AdBreak> adSchedule = new ArrayList<AdBreak>();
-//
-//        Ad ad = new Ad(AdSource.VAST, "http://www.adotube.com/php/services/player/OMLService.php?avpid=oRYYzvQ&platform_version=vast20&ad_type=linear&groupbypass=1&HTTP_REFERER=http://www.longtailvideo.com&video_identifier=longtailvideo.com,test");
-//        AdBreak adBreak = new AdBreak("pre", ad);
-//
-//        adSchedule.add(adBreak);
-//
-//        // Set your ad schedule to your advertising object
-//                Advertising advertising = new Advertising(AdSource.VAST, adSchedule);
-//
-//        // Create a playlist, you'll need this to build your player config
-//                List<PlaylistItem> playlist = new ArrayList<PlaylistItem>();
-//
-//                PlaylistItem video = new PlaylistItem("https://playertest.longtailvideo.com/vast-30s-ad.xml");
-//                PlaylistItem video2 = new PlaylistItem("https://playertest.longtailvideo.com/vast-30s-ad.xml");
-//
-//                playlist.add(video);
-//                playlist.add(video2);
-//
-//        // Create your player config
-//                PlayerConfig playerConfig = new PlayerConfig.Builder()
-//                        .playlist(playlist)
-//                        .advertising(advertising)
-//                        .build();
-//
-//        // Setup your player with the config
-//        mPlayerView.setup(playerConfig);
-        mPlayerView.load(pi);
+
+        // Create advertising schedule
+        List<AdBreak> adSchedule = new ArrayList<AdBreak>();
+
+        Ad ad = new Ad(AdSource.VAST, "https://playertest.longtailvideo.com/vast-30s-ad.xml");
+        AdBreak adBreak = new AdBreak("pre", ad);
+
+        adSchedule.add(adBreak);
+
+        // Create video
+        PlaylistItem video = new PlaylistItem(makeURL(null));
+        // Set advertising schedule to your video
+        video.setAdSchedule(adSchedule);
+
+
+        // Create second video
+        PlaylistItem video2 = new PlaylistItem("http://playertest.longtailvideo.com/jwpromo/jwpromo.m3u8");
+
+        // Create different advertising schedule
+        List<AdBreak> adSchedule2 = new ArrayList<AdBreak>();
+
+        Ad ad2 = new Ad(AdSource.VAST, "https://playertest.longtailvideo.com/vast-30s-ad.xml");
+        AdBreak adBreak2 = new AdBreak("10", ad2);
+
+        adSchedule2.add(adBreak2);
+
+        // Set advertising schedule to your video
+        video2.setAdSchedule(adSchedule2);
+
+        List<PlaylistItem> playlist = new ArrayList<PlaylistItem>();
+        playlist.add(video);
+        playlist.add(video2);
+
+        // Create your player config
+        PlayerConfig playerConfig = new PlayerConfig.Builder()
+                .playlist(playlist)
+                .build();
+
+        // Setup your player with the config
+        mPlayerView.setup(playerConfig);
+        mPlayerView.load(playlist);
     }
 
 }
