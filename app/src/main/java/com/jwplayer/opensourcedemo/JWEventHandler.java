@@ -45,7 +45,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
         VideoPlayerEvents.OnAudioTrackChangedListener,
         VideoPlayerEvents.OnCaptionsListListener,
         VideoPlayerEvents.OnMetaListener,
-        VideoPlayerEvents.OnPlaylistCompleteListener,
+//        VideoPlayerEvents.OnPlaylistCompleteListener,
         VideoPlayerEvents.OnCompleteListener,
         VideoPlayerEvents.OnLevelsChangedListener,
         VideoPlayerEvents.OnLevelsListener,
@@ -106,7 +106,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
         jwPlayerView.addOnAdPauseListener(this);
         jwPlayerView.addOnAdPlayListener(this);
         jwPlayerView.addOnMetaListener(this);
-        jwPlayerView.addOnPlaylistCompleteListener(this);
+//        jwPlayerView.addOnPlaylistCompleteListener(this);
         jwPlayerView.addOnCompleteListener(this);
         jwPlayerView.addOnBeforePlayListener(this);
         jwPlayerView.addOnBeforeCompleteListener(this);
@@ -115,6 +115,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private void updateOutput(String output) {
         mOutput.setText(output);
     }
+
 
     /**
      * Regular playback events below here
@@ -147,7 +148,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onComplete() {
-        updateOutput("onComplete()");
+        updateOutput("Thanks for Watching!");
     }
 
     @Override
@@ -175,10 +176,10 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
         updateOutput("onPlay(" + oldState + ")");
     }
 
-    @Override
-    public void onPlaylistComplete() {
-        updateOutput("onPlaylistComplete()");
-    }
+//    @Override
+//    public void onPlaylistComplete() {
+//        updateOutput("onPlaylistComplete()");
+//    }
 
     @Override
     public void onPlaylistItem(int index, PlaylistItem playlistItem) {
