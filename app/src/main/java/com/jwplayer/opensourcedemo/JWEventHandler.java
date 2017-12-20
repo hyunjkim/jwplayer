@@ -74,12 +74,13 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private TextView mOutput;
     private ImageView mImage;
     private JWPlayerView jwPlayerView;
-    private boolean paused = true;
+    private boolean paused;
 
     public JWEventHandler(JWPlayerView jwPlayerView, TextView output, ImageView image) {
         this.jwPlayerView = jwPlayerView;
         mOutput = output;
         mImage = image;
+        paused = true;
         // Subscribe to all JW Player events
         jwPlayerView.addOnSetupErrorListener(this);
         jwPlayerView.addOnPlaylistListener(this);
