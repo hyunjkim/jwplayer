@@ -216,7 +216,8 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onSetupError(String message) {
-        updateOutput("onSetupError(\"" + message + "\")");
+        updateOutput("PLEASE LOAD A VIDEO URL OR PRESS THE PLAY BUTTON");
+//        updateOutput("onSetupError(\"" + message + "\")");
     }
 
     @Override
