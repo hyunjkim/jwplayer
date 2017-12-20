@@ -59,6 +59,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         mCastManager = CastManager.getInstance();
     }
 
+    /*
+    * INITIALIZE VIEWS FOR USERS
+    */
     private void initViews() {
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
         mPlayerView = (JWPlayerView)findViewById(R.id.jwplayer);
@@ -72,6 +75,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
 
         loadBtn.setOnClickListener(this);
         playBtn.setOnClickListener(this);
+
+        // VIDEO SHOWED ERROR, SO CODE WAS ADDED HERE
+        pi.add(addVideo(videoURL));
     }
 
     @Override
@@ -136,6 +142,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         return true;
     }
 
+    /*
+    * USER EITHER LOADS A VIDEO OR PLAYS THE BUTTON AND LOADS THE DEFAULT VIDEO
+    */
     @Override
     public void onClick(View v) {
         switch(v.getId()){
@@ -145,7 +154,7 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
                 pi.add(addVideo(videoURL));
                 break;
             case R.id.playBtn:
-                if(pi.size()==0) pi.add(addVideo(videoURL));
+                if(pi.size()== 0) pi.add(addVideo(videoURL));
                 inputURL.setText("");
                 startToPlay();
                 break;
@@ -156,7 +165,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         // Create advertising schedule
         List<AdBreak> adSchedule = new ArrayList<AdBreak>();
         PlaylistItem playlist;
-
+        /*
+        * EITHER USER PROVIDES A VIDEO THEY WANT TO WATCH OR BY DEFAULT WE SHOW A MEDIUMVIDEO
+        */
         if(video == null || video.equals("")) {
             videoURL = makeURL("EasyVideo.mp4");
             imageURL = makeURL("EasyImage.jpg");
@@ -164,7 +175,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
             videoURL = makeURL("MediumVideo.mp4");
             imageURL = makeURL("MediumImage.jpg");
         }
-
+        /*
+        * ALL ADVERTISEMENTS ARE ADDED HERE
+        */
         adSchedule.add(advertisement(isAd));
         isAd = !isAd;
         playlist = new PlaylistItem.Builder()
@@ -180,16 +193,24 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         return playlist;
     }
 
+    /*
+    * URL had the same beginning, here is a helper function
+    */
     private static String makeURL(String img) {
         String urlString = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/";
         return urlString+img ;
     }
 
+    /*
+    * ADVERTISEMENT HELPER FUNCTION
+    */
     private AdBreak advertisement(boolean isAd){
         Ad ad = new Ad(AdSource.VAST, "https://playertest.longtailvideo.com/vast-30s-ad.xml");
         return isAd? new AdBreak("pre", ad):new AdBreak("10", ad);
     }
-
+    /*
+    * WHEN USER CLICKS PLAY, WE BEGIN TO LOAD THE PLAYLIST
+    */
     private void startToPlay() {
 
         // Create your player config
