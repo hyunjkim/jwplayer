@@ -34,6 +34,7 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
     private EditText inputURL;
     private List<PlaylistItem> pi = new ArrayList<>();
     private String videoURL,imageURL;
+    private boolean isAd = true;
 
     /**
      * Reference to the {@link CastManager}
@@ -152,6 +153,9 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
     }
 
     private PlaylistItem addVideo(String video) {
+        // Create advertising schedule
+        List<AdBreak> adSchedule = new ArrayList<AdBreak>();
+        PlaylistItem playlist;
 
         if(video == null || video.equals("")) {
             videoURL = makeURL("EasyVideo.mp4");
@@ -161,12 +165,19 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
             imageURL = makeURL("MediumImage.jpg");
         }
 
-        return new PlaylistItem.Builder()
+        adSchedule.add(advertisement(isAd));
+        isAd = !isAd;
+        playlist = new PlaylistItem.Builder()
                 .file(videoURL)
                 .image(imageURL)
                 .title("JW Player")
                 .description("A video player testing video.")
                 .build();
+
+        // Set advertising schedule to your video
+        playlist.setAdSchedule(adSchedule);
+
+        return playlist;
     }
 
     private static String makeURL(String img) {
@@ -174,48 +185,21 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         return urlString+img ;
     }
 
-    private void startToPlay() {
-
-        // Create advertising schedule
-        List<AdBreak> adSchedule = new ArrayList<AdBreak>();
-
+    private AdBreak advertisement(boolean isAd){
         Ad ad = new Ad(AdSource.VAST, "https://playertest.longtailvideo.com/vast-30s-ad.xml");
-        AdBreak adBreak = new AdBreak("pre", ad);
+        return isAd? new AdBreak("pre", ad):new AdBreak("10", ad);
+    }
 
-        adSchedule.add(adBreak);
-
-        // Create video
-        PlaylistItem video = new PlaylistItem(makeURL(null));
-        // Set advertising schedule to your video
-        video.setAdSchedule(adSchedule);
-
-
-        // Create second video
-        PlaylistItem video2 = new PlaylistItem("http://playertest.longtailvideo.com/jwpromo/jwpromo.m3u8");
-
-        // Create different advertising schedule
-        List<AdBreak> adSchedule2 = new ArrayList<AdBreak>();
-
-        Ad ad2 = new Ad(AdSource.VAST, "https://playertest.longtailvideo.com/vast-30s-ad.xml");
-        AdBreak adBreak2 = new AdBreak("10", ad2);
-
-        adSchedule2.add(adBreak2);
-
-        // Set advertising schedule to your video
-        video2.setAdSchedule(adSchedule2);
-
-        List<PlaylistItem> playlist = new ArrayList<PlaylistItem>();
-        playlist.add(video);
-        playlist.add(video2);
+    private void startToPlay() {
 
         // Create your player config
         PlayerConfig playerConfig = new PlayerConfig.Builder()
-                .playlist(playlist)
+                .playlist(pi)
                 .build();
 
         // Setup your player with the config
         mPlayerView.setup(playerConfig);
-        mPlayerView.load(playlist);
+        mPlayerView.load(pi);
     }
 
 }
