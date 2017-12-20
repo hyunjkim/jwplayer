@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
@@ -24,23 +25,15 @@ import java.util.List;
 
 public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener, View.OnClickListener {
 
-	/**
-	 * Reference to the {@link JWPlayerView}
-	 */
-	private PlaylistItem playlistItem;
     private JWPlayerView mPlayerView;
 	private Button loadBtn, playBtn;
 	private TextView outputTextView;
+	private ImageView mImage;
 	private EditText inputURL;
     private List<PlaylistItem> pi = new ArrayList<>();
 	private String videoURL,imageURL;
 
-	/**
-	 * An instance of our event handling class
-	 */
-	private JWEventHandler mEventHandler;
-
-	/**
+    /**
 	 * Reference to the {@link CastManager}
 	 */
 	private CastManager mCastManager;
@@ -66,35 +59,32 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		new KeepScreenOnHandler(mPlayerView, getWindow());
 
 		// Instantiate the JW Player event handler class
-		mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
+		/*
+          An instance of our event handling class
+         */
 
-		// Load a media source
-//        pi.add(new PlaylistItem.Builder()
-//                .file(videoURL)
-//                .image(imageURL)
-//                .title("JW Player")
-//                .description("A video player testing video.")
-//                .build());
+        new JWEventHandler(mPlayerView, outputTextView, mImage);
 
 		// Get a reference to the CastManager
 		mCastManager = CastManager.getInstance();
 	}
 
 	private void initViews() {
+		mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
 		mPlayerView = (JWPlayerView)findViewById(R.id.jwplayer);
 		outputTextView = (TextView)findViewById(R.id.output);
+		mImage = (ImageView)findViewById(R.id.image);
 		inputURL = (EditText) findViewById(R.id.input);
 		loadBtn = (Button)findViewById(R.id.loadBtn);
 		playBtn = (Button)findViewById(R.id.playBtn);
 		videoURL = "";
 		imageURL = "";
-		mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
 
 		loadBtn.setOnClickListener(this);
 		playBtn.setOnClickListener(this);
 	}
 
-	@Override
+    @Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		// Set fullscreen when the device is rotated to landscape
 		mPlayerView.setFullscreen(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE, true);
@@ -179,10 +169,12 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		switch(v.getId()){
 			case R.id.loadBtn:
 				videoURL = inputURL.getText().toString();
+                inputURL.setText("");
                 pi.add(addVideo(videoURL));
                 break;
 			case R.id.playBtn:
 			    if(pi.size()==0) pi.add(addVideo(videoURL));
+                inputURL.setText("");
 				startToPlay();
                 break;
 		}
@@ -196,21 +188,24 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
             videoURL = makeURL("MediumVideo.mp4");
             imageURL = makeURL("MediumImage.jpg");
         }
-        playlistItem = new PlaylistItem.Builder()
+        /*
+	  Reference to the {@link JWPlayerView}
+	 */
+        return new PlaylistItem.Builder()
                 .file(videoURL)
                 .image(imageURL)
                 .title("JW Player")
                 .description("A video player testing video.")
                 .build();
-        return playlistItem;
     }
 
-    private String makeURL(String img) {
+    private static String makeURL(String img) {
         String urlString = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/";
-        return urlString+img;
+        return urlString+img ;
     }
 
     private void startToPlay() {
         mPlayerView.load(pi);
     }
+
 }

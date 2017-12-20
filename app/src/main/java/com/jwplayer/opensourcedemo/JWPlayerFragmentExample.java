@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.longtailvideo.jwplayer.JWPlayerSupportFragment;
@@ -37,6 +38,7 @@ public class JWPlayerFragmentExample extends AppCompatActivity {
         setContentView(R.layout.activity_jwplayerfragment);
 
         TextView outputTextView = (TextView)findViewById(R.id.output);
+        ImageView mImage = (ImageView) findViewById(R.id.image);
 
         // Construct a new JWPlayerSupportFragment (since we're using AppCompatActivity)
         mPlayerFragment = JWPlayerSupportFragment.newInstance(new PlayerConfig.Builder()
@@ -60,7 +62,7 @@ public class JWPlayerFragmentExample extends AppCompatActivity {
         new KeepScreenOnHandler(mPlayerView, getWindow());
 
         // Instantiate the JW Player event handler class
-        mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
+        mEventHandler = new JWEventHandler(mPlayerView, outputTextView, mImage);
     }
 
     @Override

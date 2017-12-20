@@ -1,5 +1,6 @@
 package com.jwplayer.opensourcedemo;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
@@ -24,8 +25,11 @@ import com.longtailvideo.jwplayer.media.audio.AudioTrack;
 import com.longtailvideo.jwplayer.media.captions.Caption;
 import com.longtailvideo.jwplayer.media.meta.Metadata;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import static com.longtailvideo.jwplayer.core.PlayerState.PAUSED;
 
 /**
  * Outputs all JW Player Events to logging, with the exception of time events.
@@ -67,12 +71,16 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
         AdvertisingEvents.OnAdPauseListenerV2,
         AdvertisingEvents.OnAdPlayListenerV2,
         AdvertisingEvents.OnBeforePlayListener,
-        AdvertisingEvents.OnBeforeCompleteListener {
+        AdvertisingEvents.OnBeforeCompleteListener{
 
-    TextView mOutput;
+    private TextView mOutput;
+    private ImageView mImage;
+    private JWPlayerView jwPlayerView;
 
-    public JWEventHandler(JWPlayerView jwPlayerView, TextView output) {
+    public JWEventHandler(JWPlayerView jwPlayerView, TextView output, ImageView image) {
+        this.jwPlayerView = jwPlayerView;
         mOutput = output;
+        mImage = image;
         // Subscribe to all JW Player events
         jwPlayerView.addOnSetupErrorListener(this);
         jwPlayerView.addOnPlaylistListener(this);
@@ -115,7 +123,20 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private void updateOutput(String output) {
         mOutput.setText(output);
     }
-
+    private static String makeURL(int num) {
+        String urlString = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/";
+        return urlString+"HardImage" + num + ".jpg";
+    }
+    private int num = 1;
+    private void setImageUpdate(boolean update) {
+        if(update){
+//            Uri myUri = Uri.parse(makeURL(num));
+//            mImage.setImageURI(myUri);
+            Picasso.with(jwPlayerView.getContext()).load(makeURL(num)).into(mImage);
+            num = num == 1? 2: 1;
+            jwPlayerView.play(true);
+        }
+    }
 
     /**
      * Regular playback events below here
@@ -168,6 +189,8 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onPause(PlayerState oldState) {
+        jwPlayerView.pause(true);
+        setImageUpdate(true);
         updateOutput("onPause(" + oldState + ")");
     }
 
@@ -178,7 +201,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onPlaylistComplete() {
-        updateOutput("THANKS FOR WATCHING!");
+        updateOutput("THANKS FOR WATCHING!!!!!!!!!!!!!!");
     }
 
     @Override
@@ -204,6 +227,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     @Override
     public void onTime(long position, long duration) {
         // Do nothing - this fires several times per second
+        if( 4999 <= position && position <= 6000) onPause(PAUSED);
     }
 
     @Override

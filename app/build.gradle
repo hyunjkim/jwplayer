@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 	compileSdkVersion 23
-	buildToolsVersion '25.0.0'
+	buildToolsVersion '25.0.2'
 
 	defaultConfig {
 		applicationId "com.jwplayer.opensourcedemo"
@@ -17,15 +17,18 @@ android {
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
+    compileOptions {
+    }
 }
 
 dependencies {
 	compile fileTree(include: ['*.jar'], dir: 'libs')
 	testCompile 'junit:junit:4.12'
-	compile 'com.android.support:appcompat-v7:23.1.0'
+	compile 'com.android.support:appcompat-v7:23.3.0'
 	compile 'com.android.support:design:23.3.0'
 	compile 'com.longtailvideo.jwplayer:jwplayer-core:+'
 	compile 'com.longtailvideo.jwplayer:jwplayer-common:+'
 //	compile 'com.longtailvideo.jwplayer:jwplayer-ima:+'        // Only required if using IMA features
 	compile 'com.longtailvideo.jwplayer:jwplayer-chromecast:+' // Only required if using Chromecast
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
