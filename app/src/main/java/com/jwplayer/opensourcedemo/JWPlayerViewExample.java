@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
@@ -16,12 +19,16 @@ import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
 import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 
-public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener {
+public class JWPlayerViewExample extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener, View.OnClickListener {
 
 	/**
 	 * Reference to the {@link JWPlayerView}
 	 */
 	private JWPlayerView mPlayerView;
+	private Button loadBtn, playBtn;
+	private TextView outputTextView;
+	private EditText inputURL;
+	private String videoUrl;
 
 	/**
 	 * An instance of our event handling class
@@ -39,15 +46,13 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 	 */
 	private CoordinatorLayout mCoordinatorLayout;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_jwplayerview);
-		mPlayerView = (JWPlayerView)findViewById(R.id.jwplayer);
-		TextView outputTextView = (TextView)findViewById(R.id.output);
 
-		mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
+		//initiate the views & button click listeners
+		initViews();
 
 		// Handle hiding/showing of ActionBar
 		mPlayerView.addOnFullscreenListener(this);
@@ -59,15 +64,22 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 		mEventHandler = new JWEventHandler(mPlayerView, outputTextView);
 
 		// Load a media source
-		PlaylistItem pi = new PlaylistItem.Builder()
-				.file("https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/EasyVideo.mp4")
-				.title("JW Player")
-				.description("A video player testing video.")
-				.build();
-		mPlayerView.load(pi);
 
 		// Get a reference to the CastManager
 		mCastManager = CastManager.getInstance();
+	}
+
+	private void initViews() {
+		mPlayerView = (JWPlayerView)findViewById(R.id.jwplayer);
+		outputTextView = (TextView)findViewById(R.id.output);
+		inputURL = (EditText) findViewById(R.id.input);
+		loadBtn = (Button)findViewById(R.id.loadBtn);
+		playBtn = (Button)findViewById(R.id.playBtn);
+		videoUrl = "";
+		mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_jwplayerview);
+
+		loadBtn.setOnClickListener(this);
+		playBtn.setOnClickListener(this);
 	}
 
 	@Override
@@ -148,5 +160,27 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+			case R.id.loadBtn:
+				videoUrl = inputURL.getText().toString();
+                break;
+			case R.id.playBtn:
+				startToPlay();
+				break;
+		}
+	}
+
+	private void startToPlay() {
+		if(videoUrl.length() < 1) videoUrl = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/EasyVideo.mp4";
+        PlaylistItem pi = new PlaylistItem.Builder()
+				.file(videoUrl)
+				.title("JW Player")
+				.description("A video player testing video.")
+				.build();
+		mPlayerView.load(pi);
 	}
 }
