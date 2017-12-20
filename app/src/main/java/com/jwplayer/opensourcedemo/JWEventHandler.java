@@ -29,8 +29,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import static com.longtailvideo.jwplayer.core.PlayerState.PAUSED;
-
 /**
  * Outputs all JW Player Events to logging, with the exception of time events.
  */
@@ -76,6 +74,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private TextView mOutput;
     private ImageView mImage;
     private JWPlayerView jwPlayerView;
+    private boolean paused = true;
 
     public JWEventHandler(JWPlayerView jwPlayerView, TextView output, ImageView image) {
         this.jwPlayerView = jwPlayerView;
@@ -130,8 +129,6 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private int num = 1;
     private void setImageUpdate(boolean update) {
         if(update){
-//            Uri myUri = Uri.parse(makeURL(num));
-//            mImage.setImageURI(myUri);
             Picasso.with(jwPlayerView.getContext()).load(makeURL(num)).into(mImage);
             num = num == 1? 2: 1;
             jwPlayerView.play(true);
@@ -189,8 +186,6 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onPause(PlayerState oldState) {
-        jwPlayerView.pause(true);
-        setImageUpdate(true);
         updateOutput("onPause(" + oldState + ")");
     }
 
@@ -227,7 +222,11 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     @Override
     public void onTime(long position, long duration) {
         // Do nothing - this fires several times per second
-        if( 4999 <= position && position <= 6000) onPause(PAUSED);
+        if( 4999 <= position && position <= 5999 && paused) {
+            paused = !paused;
+            jwPlayerView.pause(true);
+            setImageUpdate(true);
+        }
     }
 
     @Override

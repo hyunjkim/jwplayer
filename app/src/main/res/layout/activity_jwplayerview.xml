@@ -14,6 +14,7 @@
 
         <com.longtailvideo.jwplayer.JWPlayerView
             android:id="@+id/jwplayer"
+            app:jw_file="https://playertest.longtailvideo.com/vast-30s-ad.xml"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
