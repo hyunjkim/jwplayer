@@ -1,5 +1,6 @@
 package com.jwplayer.opensourcedemo;
 
+import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jwplayer.opensourcedemo.dialog.DisplayMessage;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.configuration.PlayerConfig;
@@ -25,7 +27,7 @@ import com.longtailvideo.jwplayer.media.playlists.PlaylistItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener, View.OnClickListener {
+public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.OnFullscreenListener, View.OnClickListener{
 
     private JWPlayerView mPlayerView;
     private Button loadBtn, playBtn;
@@ -34,7 +36,8 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
     private EditText inputURL;
     private List<PlaylistItem> pi = new ArrayList<>();
     private String videoURL,imageURL;
-    private boolean isAd = true;
+    private boolean isAd = true
+    private DialogFragment newFragment;
 
     /**
      * Reference to the {@link CastManager}
@@ -55,7 +58,7 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
         initViews();
         mPlayerView.addOnFullscreenListener(this);
         new KeepScreenOnHandler(mPlayerView, getWindow());
-        new JWEventHandler(mPlayerView, outputTextView, mImage);
+        new JWEventHandler(mPlayerView, outputTextView, mImage, dialogListener);
         mCastManager = CastManager.getInstance();
     }
 
@@ -78,6 +81,10 @@ public class ExtraCredit extends AppCompatActivity implements VideoPlayerEvents.
 
         // VIDEO SHOWED ERROR, SO CODE WAS ADDED HERE
         pi.add(addVideo(videoURL));
+    }
+    public void startDialog(){
+        DialogFragment newFragment = new DisplayMessage();
+        newFragment.show(getFragmentManager(),"hello");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.jwplayer.opensourcedemo;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jwplayer.opensourcedemo.dialog.DisplayMessage;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.cast.CastManager;
 import com.longtailvideo.jwplayer.events.listeners.VideoPlayerEvents;
@@ -188,9 +190,9 @@ public class JWPlayerViewExample extends AppCompatActivity implements VideoPlaye
             videoURL = makeURL("MediumVideo.mp4");
             imageURL = makeURL("MediumImage.jpg");
         }
-        /*
-	  Reference to the {@link JWPlayerView}
-	 */
+		/*
+		  Reference to the {@link JWPlayerView}
+		 */
         return new PlaylistItem.Builder()
                 .file(videoURL)
                 .image(imageURL)

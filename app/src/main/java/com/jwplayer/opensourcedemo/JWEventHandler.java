@@ -3,6 +3,7 @@ package com.jwplayer.opensourcedemo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jwplayer.opensourcedemo.dialog.DisplayMessage;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.longtailvideo.jwplayer.core.PlayerState;
 import com.longtailvideo.jwplayer.events.AdClickEvent;
@@ -75,6 +76,8 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private ImageView mImage;
     private JWPlayerView jwPlayerView;
     private boolean paused = true;
+    private int num = 1;
+
 
     public JWEventHandler(JWPlayerView jwPlayerView, TextView output, ImageView image) {
         this.jwPlayerView = jwPlayerView;
@@ -122,11 +125,17 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
     private void updateOutput(String output) {
         mOutput.setText(output);
     }
+
+    /**
+     * Helper function for creating url
+     */
     private static String makeURL(int num) {
         String urlString = "https://s3.amazonaws.com/bob.jwplayer.com/~test/assets/";
         return urlString+"HardImage" + num + ".jpg";
     }
-    private int num = 1;
+    /**
+     * changing the images between two images
+     */
     private void setImageUpdate(boolean update) {
         if(update){
             Picasso.with(jwPlayerView.getContext()).load(makeURL(num)).into(mImage);
@@ -134,7 +143,13 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
             jwPlayerView.play(true);
         }
     }
-
+    /**
+     * Display a dialog
+     */
+    private void displayDialog(String message) {
+        DisplayMessage dm = new DisplayMessage();
+        dm.setMessage(message);
+    }
     /**
      * Regular playback events below here
      */
@@ -166,6 +181,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onComplete() {
+        displayDialog("Thanks for Watching!");
         updateOutput("Thanks for Watching!");
     }
 
@@ -196,7 +212,9 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onPlaylistComplete() {
+        displayDialog("Thanks For Watching!!!");
         updateOutput("THANKS FOR WATCHING!!!!!!!!!!!!!!");
+
     }
 
     @Override
@@ -216,8 +234,8 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onSetupError(String message) {
-        updateOutput("PLEASE LOAD A VIDEO URL OR PRESS THE PLAY BUTTON");
-//        updateOutput("onSetupError(\"" + message + "\")");
+        displayDialog("Please load a video URL or press the PLAY button");
+        updateOutput("onSetupError(\"" + message + "\")");
     }
 
     @Override
@@ -293,6 +311,7 @@ public class JWEventHandler implements VideoPlayerEvents.OnSetupErrorListener,
 
     @Override
     public void onAdPlay(AdPlayEvent adPlayEvent) {
+        displayDialog("Commercial Break! JW PLAYER IS THE BEST!");
         updateOutput("COMMERCIAL BREAK!!!!!! JWPLAYER THE BEST!!");
 //        updateOutput("onAdPlay(\"" + adPlayEvent.getTag() + "\", \"" + adPlayEvent.getOldState() + "\")");
     }
